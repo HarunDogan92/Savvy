@@ -19,7 +19,7 @@ import com.example.savvy.navigation.Screen
 fun SimpleBottomAppBar(navController: NavHostController) {
     val items = listOf(
         Screen.Home,
-        Screen.Watchlist
+        Screen.Recurring
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

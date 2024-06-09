@@ -6,9 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.savvy.screens.DetailScreen
+import com.example.savvy.screens.AddSpendingScreen
 import com.example.savvy.screens.HomeScreen
-import com.example.savvy.screens.WatchlistScreen
+import com.example.savvy.screens.RecurringScreen
 
 @Composable
 fun Navigation() {
@@ -19,15 +19,11 @@ fun Navigation() {
         composable(route = Screen.Home.route){
             HomeScreen(navController)
         }
-        composable(route = Screen.Detail.route + "/{movieId}",
-                arguments = listOf(
-                    navArgument(name = "movieId") {type = NavType.StringType})
-        ){ backStackEntry ->
-            DetailScreen(backStackEntry,
-                navController)
+        composable(route = Screen.AddSpending.route){ backStackEntry ->
+            AddSpendingScreen(backStackEntry, navController)
         }
-        composable(route = Screen.Watchlist.route) {
-            WatchlistScreen(navController)
+        composable(route = Screen.Recurring.route) {
+            RecurringScreen(navController)
         }
     }
 }
