@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.savvy.entities.Budget
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -42,8 +43,9 @@ fun SpendingRow(budget: Budget){
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Row {
-            Text(budget.amount.toString())
-            Text(budget.date.toString())
+            Text("Amount: " + budget.amount.toString() + " / ")
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+            Text("Date: " + budget.date.format(formatter))
             if (showDetails) {
                 SpendingDetails(budget)
             }
