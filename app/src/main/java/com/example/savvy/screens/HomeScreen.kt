@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.savvy.data.SavvyDatabase
@@ -43,7 +44,10 @@ fun HomeScreen(navController: NavHostController) {
             .fillMaxSize()
             .padding(values)
         ) {
-            Text(text = viewModel.calculateSum(viewModel.budget.collectAsState().value).toString())
+            Text(
+                text = "Budget: ${viewModel.calculateSum(viewModel.budget.collectAsState().value)}",
+                fontSize = 24.sp
+            )
             Button(onClick = { navController.navigate(route = Screen.AddBudget.route) }) {
                 Text(text = "Add Budget")
             }

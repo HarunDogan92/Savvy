@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,6 +18,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -26,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.savvy.data.SavvyDatabase
+import com.example.savvy.entities.Budget
 import com.example.savvy.repos.BudgetRepository
 import com.example.savvy.viewmodels.HomeViewModel
 import com.example.savvy.viewmodels.HomeViewModelFactory
@@ -48,6 +52,9 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
     var title by rememberSaveable { mutableStateOf(budget.title) }
     var amount by rememberSaveable { mutableStateOf(budget.amount.toString()) }
     var date by rememberSaveable { mutableStateOf(budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))) }
+    var expanded by remember { mutableStateOf(false) }
+    val categories = if (budget.amount < 0) Budget.expensesCategories else Budget.budgetCategories
+    var selectedCategory by rememberSaveable { mutableStateOf(Budget.combinedCategories.first()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -82,6 +89,36 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 date = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
             }
 
+            Text(
+                text = "Category",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = selectedCategory,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    Button(onClick = { expanded = true }) {
+                        Text("Select")
+                    }
+                }
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category) },
+                        onClick = {
+                            selectedCategory = category
+                            expanded = false
+                        }
+                    )
+                }
+            }
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,7 +128,8 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                     val updatedBudget = budget.copy(
                         title = title,
                         amount = amount.toInt(),
-                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
+                        category = selectedCategory
                     )
                     vm.updateBudget(updatedBudget)
                     navController.navigateUp()

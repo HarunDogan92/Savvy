@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -56,6 +59,8 @@ fun AddBudgetScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
     var description by rememberSaveable { mutableStateOf("") }
     var amount by rememberSaveable { mutableStateOf("") }
     var date by rememberSaveable { mutableStateOf(LocalDateTime.now()) }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCategory by rememberSaveable { mutableStateOf(Budget.budgetCategories.first()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -88,13 +93,43 @@ fun AddBudgetScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
             )
             DateTextField {date = it}
 
+            Text(
+                text = "Category",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = selectedCategory,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    Button(onClick = { expanded = true }) {
+                        Text("Select")
+                    }
+                }
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                Budget.budgetCategories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category) },
+                        onClick = {
+                            selectedCategory = category
+                            expanded = false
+                        }
+                    )
+                }
+            }
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    vm.addNewBudget(Budget(title = description, amount = amount.toInt(), date = date))
+                    vm.addNewBudget(Budget(title = description, amount = amount.toInt(), date = date, category = selectedCategory))
                     navController.navigateUp()
                     Toast.makeText(
                         context,

@@ -49,7 +49,7 @@ fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeV
         Row(modifier = Modifier.fillMaxWidth()) {
             Text("Amount: ${budget.amount} / ")
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-            Text("Date: ${budget.date.format(formatter)}", modifier = Modifier.weight(1f))
+            Text("Date: ${budget.date.format(formatter)} / Category: ${budget.category}", modifier = Modifier.weight(1f))
             IconButton(onClick = {
                 viewModel.removeBudget(budget)
             }) {

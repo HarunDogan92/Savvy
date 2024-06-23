@@ -12,5 +12,11 @@ data class Budget(
     var budgetId: Long = 0,
     var title: String,
     var date: LocalDateTime = LocalDateTime.now(),
-    var amount: Int
-)
+    var amount: Int,
+    var category: String = "other" // Standardwert für Kategorie
+) {
+    companion object {
+        val budgetCategories = listOf("other", "krypto", "gift", "bet", "business")
+        val expensesCategories = listOf("other", "rent", "groceries", "entertainment", "transportation", "healthcare")
+    }
+}
