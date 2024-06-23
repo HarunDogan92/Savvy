@@ -31,9 +31,6 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeViewModel){
-    var showDetails by remember {
-        mutableStateOf(false)
-    }
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(5.dp)
@@ -44,7 +41,6 @@ fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeV
             )
         )
         .clickable {
-            showDetails = !showDetails
             navController.navigate("edit_budget/${budget.budgetId}")
         },
         shape = ShapeDefaults.Large,
@@ -54,9 +50,6 @@ fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeV
             Text("Amount: ${budget.amount} / ")
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
             Text("Date: ${budget.date.format(formatter)}", modifier = Modifier.weight(1f))
-            if (showDetails) {
-                BudgetDetails(budget)
-            }
             IconButton(onClick = {
                 viewModel.removeBudget(budget)
             }) {
@@ -67,9 +60,4 @@ fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeV
             }
         }
     }
-}
-
-@Composable
-fun BudgetDetails(budget: Budget) {
-    Text("TODO")
 }
