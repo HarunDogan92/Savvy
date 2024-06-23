@@ -129,7 +129,7 @@ fun AddBudgetScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
                     .height(56.dp)
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    vm.addNewBudget(Budget(title = description, amount = amount.toInt(), date = date, category = selectedCategory))
+                    vm.addNewBudget(Budget(title = description, amount = amount.toInt(), date = date.plusHours(2), category = selectedCategory))
                     navController.navigateUp()
                     Toast.makeText(
                         context,

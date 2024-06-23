@@ -128,7 +128,7 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                     val updatedBudget = budget.copy(
                         title = title,
                         amount = amount.toInt(),
-                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
+                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")).plusHours(2),
                         category = selectedCategory
                     )
                     vm.updateBudget(updatedBudget)
