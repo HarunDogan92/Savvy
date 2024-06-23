@@ -20,7 +20,7 @@ import com.example.savvy.data.SavvyDatabase
 import com.example.savvy.viewmodels.HomeViewModel
 import com.example.savvy.viewmodels.HomeViewModelFactory
 import com.example.savvy.entities.Budget
-import com.example.savvy.models.SpendingRow
+import com.example.savvy.models.BudgetRow
 import com.example.savvy.navigation.Screen
 import com.example.savvy.repos.BudgetRepository
 import com.example.savvy.widgets.SimpleBottomAppBar
@@ -44,8 +44,11 @@ fun HomeScreen(navController: NavHostController) {
             .padding(values)
         ) {
             Text(text = viewModel.calculateSum(viewModel.budget.collectAsState().value).toString())
-            Button(onClick = { navController.navigate(route = Screen.AddSpending.route) }) {
-                Text(text = "Add")
+            Button(onClick = { navController.navigate(route = Screen.AddBudget.route) }) {
+                Text(text = "Add Budget")
+            }
+            Button(onClick = { navController.navigate(route = Screen.AddExpense.route) }) {
+                Text(text = "Add Expense")
             }
             BudgetList(
                 budgets = viewModel.budget.collectAsState().value,
@@ -66,7 +69,7 @@ fun BudgetList(
             .padding(values)
     ) {
         items(budgets) {
-                budget -> SpendingRow(
+                budget -> BudgetRow(
                     budget = budget
                 )
         }

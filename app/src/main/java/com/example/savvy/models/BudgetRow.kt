@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun SpendingRow(budget: Budget){
+fun BudgetRow(budget: Budget){
     var showDetails by remember {
         mutableStateOf(false)
     }
@@ -47,13 +47,13 @@ fun SpendingRow(budget: Budget){
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
             Text("Date: " + budget.date.format(formatter))
             if (showDetails) {
-                SpendingDetails(budget)
+                BudgetDetails(budget)
             }
         }
     }
 }
 
 @Composable
-fun SpendingDetails(budget: Budget) {
+fun BudgetDetails(budget: Budget) {
     Text("TODO")
 }

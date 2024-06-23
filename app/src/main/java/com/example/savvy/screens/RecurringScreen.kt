@@ -14,10 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.savvy.data.SavvyDatabase
-import com.example.savvy.entities.Budget
 import com.example.savvy.entities.Income
 import com.example.savvy.models.RecurringRow
-import com.example.savvy.models.SpendingRow
 import com.example.savvy.viewmodels.RecurringViewModel
 import com.example.savvy.viewmodels.RecurringViewModelFactory
 import com.example.savvy.repos.IncomeRepository

@@ -1,12 +1,11 @@
 package com.example.savvy.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.savvy.screens.AddSpendingScreen
+import com.example.savvy.screens.AddBudgetScreen
+import com.example.savvy.screens.AddExpensesScreen
 import com.example.savvy.screens.HomeScreen
 import com.example.savvy.screens.RecurringScreen
 
@@ -19,8 +18,11 @@ fun Navigation() {
         composable(route = Screen.Home.route){
             HomeScreen(navController)
         }
-        composable(route = Screen.AddSpending.route){ backStackEntry ->
-            AddSpendingScreen(backStackEntry, navController)
+        composable(route = Screen.AddBudget.route){ backStackEntry ->
+            AddBudgetScreen(backStackEntry, navController)
+        }
+        composable(route = Screen.AddExpense.route){ backStackEntry ->
+            AddExpensesScreen(backStackEntry, navController)
         }
         composable(route = Screen.Recurring.route) {
             RecurringScreen(navController)

@@ -46,7 +46,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AddSpendingScreen(backStackEntry: NavBackStackEntry, navController: NavHostController) {
+fun AddBudgetScreen(backStackEntry: NavBackStackEntry, navController: NavHostController) {
     val db = SavvyDatabase.getDatabase(LocalContext.current, rememberCoroutineScope())
     val repo = BudgetRepository(budgetDao = db.budgetDao())
     val factory = HomeViewModelFactory(repo)
@@ -59,7 +59,7 @@ fun AddSpendingScreen(backStackEntry: NavBackStackEntry, navController: NavHostC
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { SimpleTopAppBar("Add Spending", navController) }
+        topBar = { SimpleTopAppBar("Add Budget", navController) }
     ) { values ->
         Column(
             modifier = Modifier
@@ -74,7 +74,7 @@ fun AddSpendingScreen(backStackEntry: NavBackStackEntry, navController: NavHostC
                 modifier = Modifier.fillMaxWidth(),
                 value = description,
                 onValueChange = { description = it },
-                placeholder = { Text(text = "e.g. Food") },
+                placeholder = { Text(text = "e.g. Krypto") },
             )
             Text(
                 text = "Amount",
@@ -84,7 +84,7 @@ fun AddSpendingScreen(backStackEntry: NavBackStackEntry, navController: NavHostC
                 modifier = Modifier.fillMaxWidth(),
                 value = amount,
                 onValueChange = { amount = it },
-                placeholder = { Text(text = "e.g. -500") },
+                placeholder = { Text(text = "e.g. 500") },
             )
             DateTextField {date = it}
 
