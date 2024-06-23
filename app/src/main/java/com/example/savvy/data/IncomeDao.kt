@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.savvy.entities.Income
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 @Dao
 interface IncomeDao {
@@ -25,4 +26,6 @@ interface IncomeDao {
     @Query("SELECT * from income")
     fun fetchAll(): Flow<List<Income>>
 
+    @Query("SELECT * FROM Income WHERE date = :date")
+    suspend fun findByDate(date: LocalDate): List<Income>
 }

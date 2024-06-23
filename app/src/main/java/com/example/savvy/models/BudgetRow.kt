@@ -26,12 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.savvy.R
 import com.example.savvy.entities.Budget
+import com.example.savvy.viewmodels.HomeRecurringViewModel
 import com.example.savvy.viewmodels.HomeViewModel
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeViewModel){
+fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeRecurringViewModel){
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(5.dp)

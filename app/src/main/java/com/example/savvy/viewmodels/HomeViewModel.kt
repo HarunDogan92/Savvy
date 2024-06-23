@@ -22,10 +22,6 @@ class HomeViewModel(private val repository: BudgetRepository) : ViewModel() {
         }
     }
 
-    fun calculateSum(budgetList: List<Budget>): Int{
-        return budgetList.sumOf { it.amount }
-    }
-
     fun addNewBudget(budget: Budget) {
         viewModelScope.launch {
             repository.add(budget)
@@ -42,12 +38,6 @@ class HomeViewModel(private val repository: BudgetRepository) : ViewModel() {
     fun updateBudget(budget: Budget) {
         viewModelScope.launch {
             repository.update(budget)
-        }
-    }
-
-    fun removeBudget(budget: Budget) {
-        viewModelScope.launch {
-            repository.delete(budget)
         }
     }
 }
