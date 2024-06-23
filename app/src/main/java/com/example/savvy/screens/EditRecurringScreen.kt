@@ -29,36 +29,36 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.savvy.data.SavvyDatabase
-import com.example.savvy.entities.Budget
-import com.example.savvy.repos.BudgetRepository
-import com.example.savvy.viewmodels.HomeViewModel
-import com.example.savvy.viewmodels.HomeViewModelFactory
+import com.example.savvy.entities.Income
+import com.example.savvy.repos.IncomeRepository
+import com.example.savvy.viewmodels.RecurringViewModel
+import com.example.savvy.viewmodels.RecurringViewModelFactory
 import com.example.savvy.widgets.SimpleTopAppBar
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
+fun EditRecurringScreen(incomeId: Long, navController: NavHostController) {
     val db = SavvyDatabase.getDatabase(LocalContext.current, rememberCoroutineScope())
-    val repo = BudgetRepository(budgetDao = db.budgetDao())
-    val factory = HomeViewModelFactory(repo)
-    val vm: HomeViewModel = viewModel(factory = factory)
+    val repo = IncomeRepository(incomeDao = db.incomeDao())
+    val factory = RecurringViewModelFactory(repo)
+    val vm: RecurringViewModel = viewModel(factory = factory)
 
     val context = LocalContext.current
 
     // Initiales Budget aus der Datenbank abrufen
-    val budget = vm.budget.collectAsState(initial = emptyList()).value.find { it.budgetId == budgetId } ?: return
+    val income = vm.income.collectAsState(initial = emptyList()).value.find { it.incomeId == incomeId } ?: return
 
-    var title by rememberSaveable { mutableStateOf(budget.title) }
-    var amount by rememberSaveable { mutableStateOf(budget.amount.toString()) }
-    var date by rememberSaveable { mutableStateOf(budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))) }
+    var title by rememberSaveable { mutableStateOf(income.title) }
+    var amount by rememberSaveable { mutableStateOf(income.amount.toString()) }
+    var date by rememberSaveable { mutableStateOf(income.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))) }
     var expanded by remember { mutableStateOf(false) }
-    val categories = if (budget.amount < 0) Budget.expensesCategories else Budget.budgetCategories
-    var selectedCategory by rememberSaveable { mutableStateOf(budget.category) }
+    val categories = if (income.amount < 0) Income.expensesCategories else Income.incomeCategories
+    var selectedCategory by rememberSaveable { mutableStateOf(income.category) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { SimpleTopAppBar("Edit Budget/Expense", navController) }
+        topBar = { SimpleTopAppBar("Edit Income/Expense", navController) }
     ) { values ->
         Column(
             modifier = Modifier
@@ -73,7 +73,7 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 value = title,
                 onValueChange = { title = it },
-                placeholder = { Text(text = "e.g. Krypto") },
+                placeholder = { Text(text = "e.g. Salary") },
             )
             Text(
                 text = "Amount",
@@ -83,10 +83,10 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 value = amount,
                 onValueChange = { amount = it },
-                placeholder = { Text(text = "e.g. 500") },
+                placeholder = { Text(text = "e.g. 3000") },
             )
             DateTextField { selectedDate ->
-                date = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                date = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
             }
 
             Text(
@@ -125,13 +125,13 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                     .height(56.dp)
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    val updatedBudget = budget.copy(
+                    val updatedIncome = income.copy(
                         title = title,
                         amount = amount.toInt(),
-                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
+                        date = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                         category = selectedCategory
                     )
-                    vm.updateBudget(updatedBudget)
+                    vm.updateIncome(updatedIncome)
                     navController.navigateUp()
                     Toast.makeText(
                         context,

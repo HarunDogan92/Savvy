@@ -17,4 +17,8 @@ sealed class Screen(val route: String, val title: String, val selIcon: ImageVect
 
     data object AddBudget: Screen("addbudgetscreen", "AddBudget", Icons.Filled.Add, Icons.Outlined.Add)
     data object AddExpense: Screen("addexpensesscreen", "AddExpense", Icons.Filled.Add, Icons.Outlined.Add)
+
+    data object AddIncome: Screen("addincomescreen", "AddIncome", Icons.Filled.Add, Icons.Outlined.Add)
+    data object AddRecurringExpense: Screen("addrecurringexpensesscreen", "AddRecurringExpense", Icons.Filled.Add, Icons.Outlined.Add)
+
 }

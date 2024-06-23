@@ -6,7 +6,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.savvy.screens.AddBudgetScreen
 import com.example.savvy.screens.AddExpensesScreen
+import com.example.savvy.screens.AddIncomeScreen
+import com.example.savvy.screens.AddRecurringExpensesScreen
 import com.example.savvy.screens.EditBudgetScreen
+import com.example.savvy.screens.EditRecurringScreen
 import com.example.savvy.screens.HomeScreen
 import com.example.savvy.screens.RecurringScreen
 
@@ -31,6 +34,16 @@ fun Navigation() {
         }
         composable(route = Screen.Recurring.route) {
             RecurringScreen(navController)
+        }
+        composable(route = Screen.AddIncome.route){ backStackEntry ->
+            AddIncomeScreen(backStackEntry, navController)
+        }
+        composable(route = Screen.AddRecurringExpense.route){ backStackEntry ->
+            AddRecurringExpensesScreen(backStackEntry, navController)
+        }
+        composable(route = "edit_recurring/{incomeId}") { backStackEntry ->
+            val incomeId = backStackEntry.arguments?.getString("incomeId")?.toLongOrNull() ?: return@composable
+            EditRecurringScreen(incomeId, navController)
         }
     }
 }

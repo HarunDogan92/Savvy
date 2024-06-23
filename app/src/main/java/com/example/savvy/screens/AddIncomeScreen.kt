@@ -1,16 +1,21 @@
 package com.example.savvy.screens
 
-import androidx.compose.runtime.collectAsState
-
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import android.widget.Toast
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,38 +32,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import com.example.savvy.data.SavvyDatabase
 import com.example.savvy.entities.Budget
+import com.example.savvy.entities.Income
 import com.example.savvy.repos.BudgetRepository
+import com.example.savvy.repos.IncomeRepository
 import com.example.savvy.viewmodels.HomeViewModel
 import com.example.savvy.viewmodels.HomeViewModelFactory
+import com.example.savvy.viewmodels.RecurringViewModel
+import com.example.savvy.viewmodels.RecurringViewModelFactory
 import com.example.savvy.widgets.SimpleTopAppBar
+import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.ZoneId
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
+fun AddIncomeScreen(backStackEntry: NavBackStackEntry, navController: NavHostController) {
     val db = SavvyDatabase.getDatabase(LocalContext.current, rememberCoroutineScope())
-    val repo = BudgetRepository(budgetDao = db.budgetDao())
-    val factory = HomeViewModelFactory(repo)
-    val vm: HomeViewModel = viewModel(factory = factory)
+    val repo = IncomeRepository(incomeDao = db.incomeDao())
+    val factory = RecurringViewModelFactory(repo)
+    val vm: RecurringViewModel = viewModel(factory = factory)
 
     val context = LocalContext.current
-
-    // Initiales Budget aus der Datenbank abrufen
-    val budget = vm.budget.collectAsState(initial = emptyList()).value.find { it.budgetId == budgetId } ?: return
-
-    var title by rememberSaveable { mutableStateOf(budget.title) }
-    var amount by rememberSaveable { mutableStateOf(budget.amount.toString()) }
-    var date by rememberSaveable { mutableStateOf(budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))) }
+    var description by rememberSaveable { mutableStateOf("") }
+    var amount by rememberSaveable { mutableStateOf("") }
+    var date by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var expanded by remember { mutableStateOf(false) }
-    val categories = if (budget.amount < 0) Budget.expensesCategories else Budget.budgetCategories
-    var selectedCategory by rememberSaveable { mutableStateOf(budget.category) }
+    var selectedCategory by rememberSaveable { mutableStateOf(Income.incomeCategories.first()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { SimpleTopAppBar("Edit Budget/Expense", navController) }
+        topBar = { SimpleTopAppBar("Add Recurring Income", navController) }
     ) { values ->
         Column(
             modifier = Modifier
@@ -66,14 +77,14 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 .padding(values)
         ) {
             Text(
-                text = "Title",
+                text = "Description",
                 style = MaterialTheme.typography.bodyLarge
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = title,
-                onValueChange = { title = it },
-                placeholder = { Text(text = "e.g. Krypto") },
+                value = description,
+                onValueChange = { description = it },
+                placeholder = { Text(text = "e.g. Salary") },
             )
             Text(
                 text = "Amount",
@@ -83,11 +94,9 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 value = amount,
                 onValueChange = { amount = it },
-                placeholder = { Text(text = "e.g. 500") },
+                placeholder = { Text(text = "e.g. 3000") },
             )
-            DateTextField { selectedDate ->
-                date = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-            }
+            LocalDateTextField {date = it}
 
             Text(
                 text = "Category",
@@ -108,7 +117,7 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                categories.forEach { category ->
+                Income.incomeCategories.forEach { category ->
                     DropdownMenuItem(
                         text = { Text(category) },
                         onClick = {
@@ -125,17 +134,11 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                     .height(56.dp)
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    val updatedBudget = budget.copy(
-                        title = title,
-                        amount = amount.toInt(),
-                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
-                        category = selectedCategory
-                    )
-                    vm.updateBudget(updatedBudget)
+                    vm.addNewIncome(Income(title = description, amount = amount.toInt(), date = date, category = selectedCategory))
                     navController.navigateUp()
                     Toast.makeText(
                         context,
-                        "Updated successfully",
+                        "Saved successfully",
                         Toast.LENGTH_LONG
                     ).show()
                 },
@@ -147,5 +150,47 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun LocalDateTextField(date: (LocalDate) -> Unit) {
+    Text(
+        text = "Date",
+        style = MaterialTheme.typography.bodyLarge
+    )
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed: Boolean by interactionSource.collectIsPressedAsState()
+
+    val currentDate = Date().toFormattedString()
+    var selectedDate by rememberSaveable { mutableStateOf(currentDate) }
+
+    val context = LocalContext.current
+
+    val calendar = Calendar.getInstance()
+    val year: Int = calendar.get(Calendar.YEAR)
+    val month: Int = calendar.get(Calendar.MONTH)
+    val day: Int = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val datePickerDialog =
+        DatePickerDialog(context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val newDate = Calendar.getInstance()
+            newDate.set(year, month, dayOfMonth)
+            selectedDate = "${month.toMonthName()} $dayOfMonth, $year"
+            date(LocalDate.of(year, month, dayOfMonth))
+        }, year, month, day)
+
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        readOnly = true,
+        value = selectedDate,
+        onValueChange = {},
+        trailingIcon = { Icons.Default.DateRange },
+        interactionSource = interactionSource
+    )
+
+    if (isPressed) {
+        datePickerDialog.show()
     }
 }

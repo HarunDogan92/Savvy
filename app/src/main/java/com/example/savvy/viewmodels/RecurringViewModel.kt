@@ -2,6 +2,7 @@ package com.example.savvy.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.savvy.entities.Budget
 import com.example.savvy.entities.Income
 import com.example.savvy.repos.IncomeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,31 @@ class RecurringViewModel(private val repository: IncomeRepository) : ViewModel()
             repository.fetchAll().distinctUntilChanged().collect { income ->
                 _income.value = income
             }
+        }
+    }
+
+    fun addNewIncome(income: Income) {
+        viewModelScope.launch {
+            repository.add(income)
+        }
+    }
+
+    fun addNewExpense(income: Income) {
+        viewModelScope.launch {
+            income.amount = income.amount.unaryMinus()
+            repository.add(income)
+        }
+    }
+
+    fun updateIncome(income: Income) {
+        viewModelScope.launch {
+            repository.update(income)
+        }
+    }
+
+    fun removeIncome(income: Income) {
+        viewModelScope.launch {
+            repository.delete(income)
         }
     }
 

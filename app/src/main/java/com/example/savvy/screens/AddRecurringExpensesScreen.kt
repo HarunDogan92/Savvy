@@ -1,7 +1,5 @@
 package com.example.savvy.screens
 
-import androidx.compose.runtime.collectAsState
-
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,38 +25,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import com.example.savvy.data.SavvyDatabase
-import com.example.savvy.entities.Budget
-import com.example.savvy.repos.BudgetRepository
-import com.example.savvy.viewmodels.HomeViewModel
-import com.example.savvy.viewmodels.HomeViewModelFactory
+import com.example.savvy.entities.Income
+import com.example.savvy.repos.IncomeRepository
+import com.example.savvy.viewmodels.RecurringViewModel
+import com.example.savvy.viewmodels.RecurringViewModelFactory
 import com.example.savvy.widgets.SimpleTopAppBar
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.LocalDate
 
 @Composable
-fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
+fun AddRecurringExpensesScreen(backStackEntry: NavBackStackEntry, navController: NavHostController) {
     val db = SavvyDatabase.getDatabase(LocalContext.current, rememberCoroutineScope())
-    val repo = BudgetRepository(budgetDao = db.budgetDao())
-    val factory = HomeViewModelFactory(repo)
-    val vm: HomeViewModel = viewModel(factory = factory)
+    val repo = IncomeRepository(incomeDao = db.incomeDao())
+    val factory = RecurringViewModelFactory(repo)
+    val vm: RecurringViewModel = viewModel(factory = factory)
 
     val context = LocalContext.current
-
-    // Initiales Budget aus der Datenbank abrufen
-    val budget = vm.budget.collectAsState(initial = emptyList()).value.find { it.budgetId == budgetId } ?: return
-
-    var title by rememberSaveable { mutableStateOf(budget.title) }
-    var amount by rememberSaveable { mutableStateOf(budget.amount.toString()) }
-    var date by rememberSaveable { mutableStateOf(budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))) }
+    var description by rememberSaveable { mutableStateOf("") }
+    var amount by rememberSaveable { mutableStateOf("") }
+    var date by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var expanded by remember { mutableStateOf(false) }
-    val categories = if (budget.amount < 0) Budget.expensesCategories else Budget.budgetCategories
-    var selectedCategory by rememberSaveable { mutableStateOf(budget.category) }
+    var selectedCategory by rememberSaveable { mutableStateOf(Income.expensesCategories.first()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { SimpleTopAppBar("Edit Budget/Expense", navController) }
+        topBar = { SimpleTopAppBar("Add Recurring Expense", navController) }
     ) { values ->
         Column(
             modifier = Modifier
@@ -66,14 +59,14 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 .padding(values)
         ) {
             Text(
-                text = "Title",
+                text = "Description",
                 style = MaterialTheme.typography.bodyLarge
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = title,
-                onValueChange = { title = it },
-                placeholder = { Text(text = "e.g. Krypto") },
+                value = description,
+                onValueChange = { description = it },
+                placeholder = { Text(text = "e.g. Food") },
             )
             Text(
                 text = "Amount",
@@ -83,11 +76,9 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 value = amount,
                 onValueChange = { amount = it },
-                placeholder = { Text(text = "e.g. 500") },
+                placeholder = { Text(text = "e.g. 200") },
             )
-            DateTextField { selectedDate ->
-                date = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-            }
+            LocalDateTextField {date = it}
 
             Text(
                 text = "Category",
@@ -108,7 +99,7 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                categories.forEach { category ->
+                Income.expensesCategories.forEach { category ->
                     DropdownMenuItem(
                         text = { Text(category) },
                         onClick = {
@@ -125,17 +116,11 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
                     .height(56.dp)
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    val updatedBudget = budget.copy(
-                        title = title,
-                        amount = amount.toInt(),
-                        date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
-                        category = selectedCategory
-                    )
-                    vm.updateBudget(updatedBudget)
+                    vm.addNewExpense(Income(title = description, amount = amount.toInt(), date = date, category = selectedCategory))
                     navController.navigateUp()
                     Toast.makeText(
                         context,
-                        "Updated successfully",
+                        "Saved successfully",
                         Toast.LENGTH_LONG
                     ).show()
                 },
