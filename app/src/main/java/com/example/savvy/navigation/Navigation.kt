@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.savvy.screens.AddBudgetScreen
 import com.example.savvy.screens.AddExpensesScreen
+import com.example.savvy.screens.EditBudgetScreen
 import com.example.savvy.screens.HomeScreen
 import com.example.savvy.screens.RecurringScreen
 
@@ -23,6 +24,10 @@ fun Navigation() {
         }
         composable(route = Screen.AddExpense.route){ backStackEntry ->
             AddExpensesScreen(backStackEntry, navController)
+        }
+        composable(route = "edit_budget/{budgetId}") { backStackEntry ->
+            val budgetId = backStackEntry.arguments?.getString("budgetId")?.toLongOrNull() ?: return@composable
+            EditBudgetScreen(budgetId, navController)
         }
         composable(route = Screen.Recurring.route) {
             RecurringScreen(navController)

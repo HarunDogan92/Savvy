@@ -38,4 +38,16 @@ class HomeViewModel(private val repository: BudgetRepository) : ViewModel() {
             repository.add(budget)
         }
     }
+
+    fun updateBudget(budget: Budget) {
+        viewModelScope.launch {
+            repository.update(budget)
+        }
+    }
+
+    fun removeBudget(budget: Budget) {
+        viewModelScope.launch {
+            repository.delete(budget)
+        }
+    }
 }

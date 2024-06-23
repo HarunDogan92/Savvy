@@ -52,7 +52,9 @@ fun HomeScreen(navController: NavHostController) {
             }
             BudgetList(
                 budgets = viewModel.budget.collectAsState().value,
-                values = values
+                values = values,
+                navController = navController,
+                viewModel = viewModel
             )
         }
     }
@@ -61,7 +63,9 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun BudgetList(
     budgets: List<Budget>,
-    values: PaddingValues
+    values: PaddingValues,
+    navController: NavHostController,
+    viewModel: HomeViewModel
     ) {
     LazyColumn(
         modifier = Modifier
@@ -70,7 +74,7 @@ fun BudgetList(
     ) {
         items(budgets) {
                 budget -> BudgetRow(
-                    budget = budget
+                    budget = budget, navController = navController, viewModel = viewModel
                 )
         }
     }
