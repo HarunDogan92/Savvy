@@ -54,7 +54,7 @@ fun EditBudgetScreen(budgetId: Long, navController: NavHostController) {
     var date by rememberSaveable { mutableStateOf(budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))) }
     var expanded by remember { mutableStateOf(false) }
     val categories = if (budget.amount < 0) Budget.expensesCategories else Budget.budgetCategories
-    var selectedCategory by rememberSaveable { mutableStateOf(Budget.combinedCategories.first()) }
+    var selectedCategory by rememberSaveable { mutableStateOf(budget.category) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

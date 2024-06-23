@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,10 +47,15 @@ fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeV
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text("Amount: ${budget.amount} / ")
-            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-            Text("Date: ${budget.date.format(formatter)} / Category: ${budget.category}", modifier = Modifier.weight(1f))
+        Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+            Column(modifier = Modifier.weight(1f)) {
+                if (budget.title.isNotBlank()) {
+                    Text("Title: ${budget.title}")
+                }
+                Text("Amount: ${budget.amount}")
+                Text("Date: ${budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}")
+                Text("Category: ${budget.category}")
+            }
             IconButton(onClick = {
                 viewModel.removeBudget(budget)
             }) {
