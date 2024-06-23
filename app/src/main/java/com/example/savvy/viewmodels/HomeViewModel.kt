@@ -32,7 +32,7 @@ class HomeViewModel(private val repository: BudgetRepository) : ViewModel() {
         }
     }
 
-    fun removeNewBudget(budget: Budget) {
+    fun addNewExpense(budget: Budget) {
         viewModelScope.launch {
             budget.amount = budget.amount.unaryMinus()
             repository.add(budget)
