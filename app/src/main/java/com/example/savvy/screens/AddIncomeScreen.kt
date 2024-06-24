@@ -178,7 +178,7 @@ fun LocalDateTextField(date: (LocalDate) -> Unit) {
             val newDate = Calendar.getInstance()
             newDate.set(year, month, dayOfMonth)
             selectedDate = "${month.toMonthName()} $dayOfMonth, $year"
-            date(LocalDate.of(year, month, dayOfMonth))
+            date(LocalDate.of(year, month +1, dayOfMonth))
         }, year, month, day)
 
     TextField(
