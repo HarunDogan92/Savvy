@@ -65,13 +65,20 @@ class HomeRecurringViewModel(
         val today = _currentDate.value
 
         viewModelScope.launch {
-            val incomesToday = incomeRepository.findByDate(today)
+            val incomesToday = incomeRepository.findByDay(today)
             _lastCheckedDate.value = ZonedDateTime.now(ZoneId.of("Europe/Berlin"))
             if (incomesToday.isNotEmpty()) {
                 incomesToday.forEach { income ->
+                    val incomeDay = income.date.dayOfMonth
+                    val lastDayOfMonth = today.lengthOfMonth()
+                    val adjustedDate = if (incomeDay > lastDayOfMonth) {
+                        today.withDayOfMonth(lastDayOfMonth)
+                    } else {
+                        today.withDayOfMonth(incomeDay)
+                    }
                     val newBudget = Budget(
                         title = income.title,
-                        date = LocalDateTime.of(income.date, LocalTime.MIDNIGHT),
+                        date = LocalDateTime.of(adjustedDate , LocalTime.MIDNIGHT),
                         amount = income.amount,
                         category = income.category
                     )

@@ -26,6 +26,9 @@ interface IncomeDao {
     @Query("SELECT * from income")
     fun fetchAll(): Flow<List<Income>>
 
-    @Query("SELECT * FROM Income WHERE date = :date")
-    suspend fun findByDate(date: LocalDate): List<Income>
+    @Query("SELECT * FROM Income WHERE strftime('%d', date) = :day")
+    suspend fun findByDay(day: String): List<Income>
+
+    @Query("SELECT * FROM Income WHERE strftime('%m', date) = :month AND strftime('%d', date) = :day")
+    suspend fun findByMonthAndDay(month: String, day: String): List<Income>
 }
