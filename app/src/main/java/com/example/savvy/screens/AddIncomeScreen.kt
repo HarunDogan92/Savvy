@@ -5,11 +5,14 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -74,7 +77,8 @@ fun AddIncomeScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(values)
+                .padding(values),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
                 text = "Description",
@@ -86,6 +90,7 @@ fun AddIncomeScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
                 onValueChange = { description = it },
                 placeholder = { Text(text = "e.g. Salary") },
             )
+            Spacer(modifier = Modifier.size(20.dp))
             Text(
                 text = "Amount",
                 style = MaterialTheme.typography.bodyLarge
@@ -96,8 +101,9 @@ fun AddIncomeScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
                 onValueChange = { amount = it },
                 placeholder = { Text(text = "e.g. 3000") },
             )
+            Spacer(modifier = Modifier.size(20.dp))
             LocalDateTextField {date = it}
-
+            Spacer(modifier = Modifier.size(20.dp))
             Text(
                 text = "Category",
                 style = MaterialTheme.typography.bodyLarge
@@ -127,7 +133,7 @@ fun AddIncomeScreen(backStackEntry: NavBackStackEntry, navController: NavHostCon
                     )
                 }
             }
-
+            Spacer(modifier = Modifier.size(20.dp))
             Button(
                 modifier = Modifier
                     .fillMaxWidth()

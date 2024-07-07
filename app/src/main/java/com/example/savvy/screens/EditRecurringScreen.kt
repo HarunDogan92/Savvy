@@ -3,11 +3,14 @@ package com.example.savvy.screens
 import androidx.compose.runtime.collectAsState
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -63,7 +66,8 @@ fun EditRecurringScreen(incomeId: Long, navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(values)
+                .padding(values),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
                 text = "Title",
@@ -75,6 +79,7 @@ fun EditRecurringScreen(incomeId: Long, navController: NavHostController) {
                 onValueChange = { title = it },
                 placeholder = { Text(text = "e.g. Salary") },
             )
+            Spacer(modifier = Modifier.size(20.dp))
             Text(
                 text = "Amount",
                 style = MaterialTheme.typography.bodyLarge
@@ -85,10 +90,11 @@ fun EditRecurringScreen(incomeId: Long, navController: NavHostController) {
                 onValueChange = { amount = it },
                 placeholder = { Text(text = "e.g. 3000") },
             )
+            Spacer(modifier = Modifier.size(20.dp))
             DateTextField { selectedDate ->
                 date = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
             }
-
+            Spacer(modifier = Modifier.size(20.dp))
             Text(
                 text = "Category",
                 style = MaterialTheme.typography.bodyLarge
@@ -118,7 +124,7 @@ fun EditRecurringScreen(incomeId: Long, navController: NavHostController) {
                     )
                 }
             }
-
+            Spacer(modifier = Modifier.size(20.dp))
             Button(
                 modifier = Modifier
                     .fillMaxWidth()

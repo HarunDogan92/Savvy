@@ -1,9 +1,10 @@
 package com.example.savvy.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.savvy.entities.Budget
 import com.example.savvy.entities.Income
+import com.example.savvy.notification.scheduleNotification
 import com.example.savvy.repos.IncomeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,8 @@ class RecurringViewModel(private val repository: IncomeRepository) : ViewModel()
         }
     }
 
-    fun addNewExpense(income: Income) {
+    fun addNewExpense(income: Income, context: Context) {
+        scheduleNotification(context, income)
         viewModelScope.launch {
             income.amount = income.amount.unaryMinus()
             repository.add(income)

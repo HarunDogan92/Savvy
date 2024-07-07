@@ -1,5 +1,9 @@
 package com.example.savvy.screens
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +42,12 @@ fun RecurringScreen(navController: NavHostController) {
     val factory = RecurringViewModelFactory(repo)
     val viewModel: RecurringViewModel = viewModel(factory = factory)
 
+    var hasNotificationPermission = false
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { hasNotificationPermission = it }
+    )
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { SimpleTopAppBar(title = "Recurring Income/Expenses") },
@@ -48,11 +58,17 @@ fun RecurringScreen(navController: NavHostController) {
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Absolute.SpaceAround
                 ) {
-                    Button(onClick = { navController.navigate(route = Screen.AddIncome.route) }) {
+                    Button(onClick = {
+                        if (!hasNotificationPermission) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        }
+                        navController.navigate(route = Screen.AddIncome.route) }) {
                         Text(text = "Add Income")
                     }
                     Button(onClick = { navController.navigate(route = Screen.AddRecurringExpense.route) }) {
-                        Text(text = "Add Expense")
+                        Text(text = "Add Bill")
                     }
                 }
                 Spacer(modifier = Modifier.size(10.dp))

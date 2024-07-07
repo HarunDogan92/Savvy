@@ -1,11 +1,14 @@
 package com.example.savvy.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -56,7 +59,8 @@ fun AddRecurringExpensesScreen(backStackEntry: NavBackStackEntry, navController:
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(values)
+                .padding(values),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
                 text = "Description",
@@ -68,6 +72,7 @@ fun AddRecurringExpensesScreen(backStackEntry: NavBackStackEntry, navController:
                 onValueChange = { description = it },
                 placeholder = { Text(text = "e.g. Food") },
             )
+            Spacer(modifier = Modifier.size(20.dp))
             Text(
                 text = "Amount",
                 style = MaterialTheme.typography.bodyLarge
@@ -78,8 +83,9 @@ fun AddRecurringExpensesScreen(backStackEntry: NavBackStackEntry, navController:
                 onValueChange = { amount = it },
                 placeholder = { Text(text = "e.g. 200") },
             )
+            Spacer(modifier = Modifier.size(20.dp))
             LocalDateTextField {date = it}
-
+            Spacer(modifier = Modifier.size(20.dp))
             Text(
                 text = "Category",
                 style = MaterialTheme.typography.bodyLarge
@@ -109,14 +115,14 @@ fun AddRecurringExpensesScreen(backStackEntry: NavBackStackEntry, navController:
                     )
                 }
             }
-
+            Spacer(modifier = Modifier.size(20.dp))
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    vm.addNewExpense(Income(title = description, amount = amount.toInt(), date = date, category = selectedCategory))
+                    vm.addNewExpense(Income(title = description, amount = amount.toInt(), date = date, category = selectedCategory), context)
                     navController.navigateUp()
                     Toast.makeText(
                         context,

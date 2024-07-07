@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.savvy"
-        minSdk = 28
+        minSdk = 34
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -89,4 +89,6 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }
