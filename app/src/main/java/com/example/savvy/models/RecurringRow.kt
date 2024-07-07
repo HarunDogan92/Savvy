@@ -15,25 +15,22 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.savvy.R
-import com.example.savvy.entities.Budget
 import com.example.savvy.entities.Income
-import com.example.savvy.viewmodels.HomeViewModel
 import com.example.savvy.viewmodels.RecurringViewModel
 import java.time.format.DateTimeFormatter
 
 
 @Composable
 fun RecurringRow(income: Income, navController: NavHostController, viewModel: RecurringViewModel) {
+    val colorAmount = if (income.amount > 0) Color.Green else Color.Red
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,10 +49,12 @@ fun RecurringRow(income: Income, navController: NavHostController, viewModel: Re
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             Column(modifier = Modifier.weight(1f)) {
+                Text(text = "${income.amount}",
+                    fontSize = 20.sp,
+                    color = colorAmount)
                 if (income.title.isNotBlank()) {
                     Text("Title: ${income.title}")
                 }
-                Text("Amount: ${income.amount}")
                 Text("Date: ${income.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}")
                 Text("Category: ${income.category}")
             }

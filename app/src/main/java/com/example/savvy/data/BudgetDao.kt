@@ -22,7 +22,7 @@ interface BudgetDao {
     @Delete
     suspend fun delete(budget: Budget)
 
-    @Query("SELECT * from budget")
+    @Query("SELECT * from budget order by date desc")
     fun fetchAll(): Flow<List<Budget>>
 
 }

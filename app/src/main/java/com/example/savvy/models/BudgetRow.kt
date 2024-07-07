@@ -15,25 +15,22 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.savvy.R
 import com.example.savvy.entities.Budget
 import com.example.savvy.viewmodels.HomeRecurringViewModel
-import com.example.savvy.viewmodels.HomeViewModel
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
 @Composable
 fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeRecurringViewModel){
+    val colorAmount = if (budget.amount > 0) Color.Green else Color.Red
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(5.dp)
@@ -51,10 +48,12 @@ fun BudgetRow(budget: Budget, navController: NavHostController, viewModel: HomeR
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             Column(modifier = Modifier.weight(1f)) {
+                Text(text = "${budget.amount}",
+                    fontSize = 20.sp,
+                    color = colorAmount)
                 if (budget.title.isNotBlank()) {
                     Text("Title: ${budget.title}")
                 }
-                Text("Amount: ${budget.amount}")
                 Text("Date: ${budget.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}")
                 Text("Category: ${budget.category}")
             }
