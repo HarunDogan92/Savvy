@@ -49,7 +49,7 @@ fun RecurringRow(income: Income, navController: NavHostController, viewModel: Re
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "${income.amount}",
+                Text(text = "${income.amount} €",
                     fontSize = 20.sp,
                     color = colorAmount)
                 if (income.title.isNotBlank()) {

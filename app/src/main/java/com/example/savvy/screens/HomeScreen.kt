@@ -138,7 +138,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             )
             Text(
-                text = "${viewModel.calculateSum(viewModel.budget.collectAsState().value)}",
+                text = "${viewModel.calculateSum(viewModel.budget.collectAsState().value)} €",
                 fontSize = 30.sp,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             )
