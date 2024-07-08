@@ -104,6 +104,7 @@ fun HomeScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(values)
         ) {
+            // FOR TESTING ----------------------------------
             Text(
                 text = "Simuliertes heutiges Datum: $currentDate",
                 style = MaterialTheme.typography.bodyLarge
@@ -122,6 +123,7 @@ fun HomeScreen(navController: NavHostController) {
             ) {
                 Text(text = "simulate current Date")
             }
+            // -----------------------------------------------
             Button(
                 onClick = { viewModel.checkIncomeAndAddBudget() },
                 modifier = Modifier
