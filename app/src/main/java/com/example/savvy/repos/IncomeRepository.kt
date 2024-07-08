@@ -14,15 +14,16 @@ class IncomeRepository(private val incomeDao: IncomeDao) {
     fun fetchAll(): Flow<List<Income>> = incomeDao.fetchAll()
     suspend fun findByDay(date: LocalDate): List<Income> {
         val day = date.dayOfMonth.toString().padStart(2, '0')
+        val incomes = incomeDao.findByDay(day)
 
-        // Check if the day is the last day of the current month
         val lastDayOfMonth = date.withDayOfMonth(date.lengthOfMonth()).dayOfMonth
-        if (date.dayOfMonth == lastDayOfMonth) {
+
+        if (date.dayOfMonth == lastDayOfMonth && date.monthValue != LocalDate.now().monthValue) {
             val endOfMonthIncomes = findByMonthAndDay(date)
-            return endOfMonthIncomes
-        } else {
-            return incomeDao.findByDay(day)
+            return incomes + endOfMonthIncomes
         }
+
+        return incomes
     }
     private suspend fun findByMonthAndDay(date: LocalDate): List<Income> {
         val lastDayIncomes = mutableListOf<Income>()
