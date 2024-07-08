@@ -20,7 +20,7 @@ class IncomeRepository(private val incomeDao: IncomeDao) {
 
         if (date.dayOfMonth == lastDayOfMonth && date.monthValue != LocalDate.now().monthValue) {
             val endOfMonthIncomes = findByMonthAndDay(date)
-            return incomes + endOfMonthIncomes
+            return endOfMonthIncomes
         }
 
         return incomes
